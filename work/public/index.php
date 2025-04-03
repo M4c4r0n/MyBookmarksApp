@@ -2,16 +2,39 @@
 
 session_start();
 if (!isset($_SESSION["user_id"])) {
-    header("Location: http://localhost:8080/login.php");
+    header("Location: http://localhost:8080/auth/login.php");
     exit;
 }
 require(__DIR__ . "/../app/functions.php");
 require(__DIR__ . "/../app/db.php");
 echo "ようこそ, " . $_SESSION["username"] . " さん！";
-echo "<a href='logout.php'>ログアウト</a>";
+echo "<a href='./auth/logout.php'>ログアウト</a>";
 
 $user_id = $_SESSION["user_id"];
-if(isset($_GET["tag"])){
+if(isset($_GET["q"])){
+    $search = $_GET["q"];
+    $sql = "
+        SELECT DISTINCT bookmarks.*
+        FROM bookmarks
+        LEFT JOIN bookmark_tags ON bookmarks.id = bookmark_tags.bookmark_id
+        LEFT JOIN tags ON bookmark_tags.tag_id = tags.id
+        WHERE bookmarks.user_id = ?
+    ";
+
+    $params = [$user_id];
+
+    if ($search) {
+        $sql .= " AND (bookmarks.title LIKE ? OR bookmarks.description LIKE ? OR tags.name LIKE ?)";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+        $params[] = "%$search%";
+    }
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $bookmarks = $stmt->fetchAll();
+}
+else if(isset($_GET["tag"])){
     $tag = $_GET["tag"];
     $stmt = $pdo->prepare("
         SELECT bookmarks.* FROM bookmarks
@@ -22,12 +45,12 @@ if(isset($_GET["tag"])){
     ");
     $stmt->execute([$user_id, $tag]);
     $bookmarks = $stmt->fetchAll();
+
 }else{
     $stmt = $pdo->prepare("SELECT * FROM bookmarks WHERE user_id = ? ORDER BY created_at DESC");
     $stmt->execute([$user_id]);
     $bookmarks = $stmt->fetchAll();
 }
-
 
 ?>
 
@@ -39,7 +62,11 @@ if(isset($_GET["tag"])){
 </head>
 <body>
     <h1>ブックマーク一覧<h1>
-    <a href="add_bookmark.php">新規追加</a>
+    <form action="index.php" method="GET">
+        <input type="text" name="q" placeholder="検索..." value="<?= h($_GET['q'] ?? '') ?>">
+        <button type="submit">検索</button>
+    </form>
+    <a href="./bookmark/add_bookmark.php">新規追加</a>
     <ul>
         <?php foreach($bookmarks as $bookmark): ?>
             <li>
@@ -61,8 +88,8 @@ if(isset($_GET["tag"])){
                     <?php foreach ($tag_names as $tag_name):?>
                         <a href="index.php?tag=<?=urlencode($tag_name);?>"><?=h($tag_name);?></small>
                     <?php endforeach; ?>
-                <a href="edit_bookmark.php?id=<?=$bookmark->id?>"> 編集する </a>
-                <a href="delete_bookmark.php?id=<?=$bookmark->id?>"> 削除 </a>
+                <a href="./bookmark/edit_bookmark.php?id=<?=$bookmark->id?>"> 編集する </a>
+                <a href="./bookmark/delete_bookmark.php?id=<?=$bookmark->id?>"> 削除 </a>
             </li>
         <?php endforeach; ?>
     </ul>
