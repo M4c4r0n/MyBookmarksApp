@@ -37,9 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt = $pdo->prepare("INSERT INTO bookmark_tags (bookmark_id,tag_id) VALUES (?, ?)");
             $stmt->execute([$bookmark_id,$tag_id]);
         }
-        echo "ブックマークを追加しました！ <a href='../index.php'>一覧へ</a>";
-    } else {
-        echo "追加に失敗しました <a href='../index.php'>一覧へ</a>";
+        header("Location: http://localhost:8080/index.php");
     }
 }
 ?>
