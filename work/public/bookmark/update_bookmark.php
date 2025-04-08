@@ -1,14 +1,7 @@
 <?php
 session_start();
 require(__DIR__ . "/../../app/db.php");
-
-if (!isset($_SESSION["user_id"])) {
-    echo "ログインしてください";
-    echo "<a href='../auth/login.php'>ログイン画面へ</a>";
-    exit;
-}
-
-
+define("SITE_URL","http://localhost:8080");
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = $_POST["id"];
     $user_id = $_SESSION["user_id"];
@@ -44,18 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-
-
+header("Location: " . SITE_URL . "/index.php");
 ?>
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <a href="../index.php">更新しました！一覧へ</a>
-</body>
-</html>

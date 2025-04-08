@@ -16,7 +16,6 @@ CREATE TABLE bookmarks (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
---------------------------------------------
 
 CREATE TABLE tags (
     id INT AUTO_INCREMENT PRIMARY KEY,

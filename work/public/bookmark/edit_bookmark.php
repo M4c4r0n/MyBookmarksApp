@@ -36,7 +36,7 @@ $stmt->execute([$id]);
 $tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $tags_text = implode(", ", $tags); // カンマ区切りにする
 ?>
-?>
+
 
 
 <!DOCTYPE html>
@@ -44,16 +44,23 @@ $tags_text = implode(", ", $tags); // カンマ区切りにする
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles_edit.css">
     <title>editBookmark</title>
 </head>
+<header>
+    <h1>BookMarksApp</h1>
+</header>
 <body>
-    <form action="update_bookmark.php" method="POST">
-        <input type="hidden" name="id" value="<?= $bookmark->id; ?>">
-        <input type="text" name="title" value="<?= h($bookmark->title); ?>" required>
-        <input type="url" name="url" value="<?= h($bookmark->url); ?>" required>
-        <textarea name="description"><?= h($bookmark->description); ?></textarea>
-        <input type="text" name="tags" value="<?=h($tags_text);?>">
-        <button type="submit">更新</button>
-    </form>
+    <main>
+        <h2>ブックマーク編集</h2>
+        <form action="update_bookmark.php" method="POST">
+            <input type="hidden" name="id" value="<?= $bookmark->id; ?>">
+            <input type="text" name="title" value="<?= h($bookmark->title); ?>" required>
+            <input type="url" name="url" value="<?= h($bookmark->url); ?>" required>
+            <textarea name="description"><?= h($bookmark->description); ?></textarea>
+            <input type="text" name="tags" value="<?=h($tags_text);?>">
+            <button type="submit">更新</button>
+        </form>
+    </main>
 </body>
 </html>

@@ -49,15 +49,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles_add.css">
     <title>addBookMark</title>
 </head>
+<header>
+    <h1>BookMarksApp</h1>
+</header>
 <body>
-    <form action="add_bookmark.php" method="POST">
-        <input type="text" name="title" placeholder="タイトル" required>
-        <input type="url" name="url" placeholder="URL" required>
-        <textarea name="description" placeholder="メモ"></textarea>
-        <input type="text" name="tags" placeholder="タグ（カンマ区切り）">
-        <button type="submit">追加</button>
-    </form>
+    
+    <main>
+        <h2>ブックマーク新規追加</h2>
+        <form action="add_bookmark.php" method="POST">
+            <input type="text" name="title" placeholder="タイトル" required>
+            <input type="url" name="url" placeholder="URL" required>
+            <textarea name="description" placeholder="メモ"></textarea>
+            <input type="text" name="tags" placeholder="タグ（カンマ区切り）">
+            <button type="submit">追加</button>
+        </form>
+    </main>
 </body>
 </html>

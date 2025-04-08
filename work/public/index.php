@@ -7,8 +7,7 @@ if (!isset($_SESSION["user_id"])) {
 }
 require(__DIR__ . "/../app/functions.php");
 require(__DIR__ . "/../app/db.php");
-echo "ようこそ, " . $_SESSION["username"] . " さん！";
-echo "<a href='./auth/logout.php'>ログアウト</a>";
+
 
 $user_id = $_SESSION["user_id"];
 if(isset($_GET["q"])){
@@ -57,41 +56,58 @@ else if(isset($_GET["tag"])){
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <title></title>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
-    <h1>ブックマーク一覧<h1>
-    <form action="index.php" method="GET">
-        <input type="text" name="q" placeholder="検索..." value="<?= h($_GET['q'] ?? '') ?>">
-        <button type="submit">検索</button>
-    </form>
-    <a href="./bookmark/add_bookmark.php">新規追加</a>
-    <ul>
-        <?php foreach($bookmarks as $bookmark): ?>
-            <li>
-                <a href="<?= h($bookmark->url); ?>" target="_blank">
-                    <?= h($bookmark->title); ?>
-                </a>
-                <p><?= h($bookmark->description);?></p>
-                
-                <?php 
-                    $stmt = $pdo->prepare("
-                        SELECT tags.name FROM tags
-                        INNER JOIN bookmark_tags ON tags.id = bookmark_tags.tag_id
-                        WHERE bookmark_tags.bookmark_id = ?
-                    ");
-                    $stmt->execute([$bookmark->id]);
-                    $tag_names = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                ?>
-                <small>
-                    <?php foreach ($tag_names as $tag_name):?>
-                        <a href="index.php?tag=<?=urlencode($tag_name);?>"><?=h($tag_name);?></small>
-                    <?php endforeach; ?>
-                <a href="./bookmark/edit_bookmark.php?id=<?=$bookmark->id?>"> 編集する </a>
-                <a href="./bookmark/delete_bookmark.php?id=<?=$bookmark->id?>"> 削除 </a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+    
+    <header>
+        <h1>BookMarksApp</h1>
+        <p class="user">ようこそ、<?=$_SESSION["username"]?> </p>
+        <p class="logout"><a href='./auth/logout.php'>ログアウト</a></p>
+    </header>
+    <main>
+        <h2>ブックマーク一覧</h2>
+        <div class="add">
+
+            <a href="./bookmark/add_bookmark.php">新規作成</a>
+            <form class="search" action="index.php" method="GET">
+                <input type="text" name="q" placeholder="検索..." value="<?= h($_GET['q'] ?? '') ?>">
+                <button type="submit"><img src="img/search.png" width="40px" height="40px"></button>
+            </form> 
+        </div>
+        
+        <ul class="contents">
+            <?php foreach($bookmarks as $bookmark): ?>
+                <li class="content">
+                    <a id="title" href="<?= h($bookmark->url); ?>" target="_blank">
+                        <?= h($bookmark->title); ?>
+                    </a>
+                    <p id="description"><?= h($bookmark->description);?></p>
+                    
+                    <?php 
+                        $stmt = $pdo->prepare("
+                            SELECT tags.name FROM tags
+                            INNER JOIN bookmark_tags ON tags.id = bookmark_tags.tag_id
+                            WHERE bookmark_tags.bookmark_id = ?
+                        ");
+                        $stmt->execute([$bookmark->id]);
+                        $tag_names = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                    ?>
+                    <small id="tags">
+                        <?php foreach ($tag_names as $tag_name):?>
+                            <a id="tag" href="index.php?tag=<?=urlencode($tag_name);?>"><?=h($tag_name);?></a>
+                        <?php endforeach; ?>
+                    </small>
+                    <div class="edit_delete">
+                        <a id="edit" href="./bookmark/edit_bookmark.php?id=<?=$bookmark->id?>"> 編集する </a>
+                        <a id="delete" href="./bookmark/delete_bookmark.php?id=<?=$bookmark->id?>"> 削除 </a>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </main>
 </body>
 </html>
