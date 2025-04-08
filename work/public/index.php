@@ -102,7 +102,7 @@ else if(isset($_GET["tag"])){
                         <?php endforeach; ?>
                     </small>
                     <div class="edit_delete">
-                        <a id="edit" href="./bookmark/edit_bookmark.php?id=<?=$bookmark->id?>"> 編集する </a>
+                        <a id="edit" href="./bookmark/edit_bookmark.php?id=<?=$bookmark->id?>"> 編集 </a>
                         <a id="delete" href="./bookmark/delete_bookmark.php?id=<?=$bookmark->id?>"> 削除 </a>
                     </div>
                 </li>
